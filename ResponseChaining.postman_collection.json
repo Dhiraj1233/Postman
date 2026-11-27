@@ -1,0 +1,414 @@
+{
+  "info": {
+    "_postman_id": "8d13f753-a29c-41b2-b808-15c99163206e",
+    "name": "ResponseChaining",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "59273845",
+    "_collection_link": "https://go.postman.co/collection/59273845-8d13f753-a29c-41b2-b808-15c99163206e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "ResponseChain",
+      "item": [
+        {
+          "name": "ShopperDetails",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 4000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(4000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Successful POST request\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Role is Present\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.data.role).to.eql('SHOPPER');\r",
+                  "});\r",
+                  "pm.test(\"Content-Type is present\", function () {\r",
+                  "    pm.response.to.have.header(\"Content-Type\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwtToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}{{ShopperDetailsEnd}}{{UserID}}",
+              "host": [
+                "{{BaseUrl}}{{ShopperDetailsEnd}}{{UserID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateShopper",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"BaseUrl\",\"https://www.shoppersstack.com/shopping\");\r",
+                  "pm.collectionVariables.set(\"CreateEndPoint\",\"/shoppers\");\r",
+                  "let num = Math.floor(Math.random() *10000)\r",
+                  "let randomEmail=\"Dhiraj\"+num+\"@gmail.com\"\r",
+                  "pm.collectionVariables.set(\"randomEmail\",randomEmail);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody=pm.response.json();\r",
+                  "let userid=jsonBody.data.userId\r",
+                  "let Role=jsonBody.data.role\r",
+                  "pm.collectionVariables.set(\"UserID\",userid)\r",
+                  "pm.collectionVariables.set(\"Role\",Role)\r",
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 4000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(4000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Successful POST request\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Role is Present\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.data.role).to.eql('SHOPPER');\r",
+                  "});\r",
+                  "pm.test(\"Content-Type is present\", function () {\r",
+                  "    pm.response.to.have.header(\"Content-Type\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"city\": \"Banglore\",\r\n  \"country\": \"India\",\r\n  \"email\": \"{{randomEmail}}\",\r\n  \"firstName\": \"Dhiraj\",\r\n  \"gender\": \"MALE\",\r\n  \"lastName\": \"Kumar\",\r\n  \"password\": \"Kumar@3456\",\r\n  \"phone\": 9999334456,\r\n  \"state\": \"Karnatka\",\r\n  \"zoneId\": \"ALPHA\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}{{CreateEndPoint}}",
+              "host": [
+                "{{BaseUrl}}{{CreateEndPoint}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ShopperLogin",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"LoginEndPoint\", \"/users/login\")\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody=pm.response.json();\r",
+                  "let token=jsonBody.data.jwtToken\r",
+                  "pm.collectionVariables.set(\"jwtToken\", token);\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 4000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(4000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Successful POST request\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Role is Present\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.data.role).to.eql('SHOPPER');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Content-Type is present\", function () {\r",
+                  "    pm.response.to.have.header(\"Content-Type\");\r",
+                  "});\r",
+                  "pm.test(\"server is present\", function () {\r",
+                  "    pm.response.to.have.header(\"Server\");\r",
+                  "});\r",
+                  "pm.test(\"Body matches string\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"jwtToken\");\r",
+                  "});\r",
+                  "pm.test(\"Body is correct\", function () {\r",
+                  "    var data=pm.response.json();\r",
+                  "    pm.response.to.have.body(data);\r",
+                  "});\r",
+                  "const schema = {\r",
+                  "    type: \"object\",\r",
+                  "    required: [\"statusCode\", \"message\", \"data\"],\r",
+                  "    properties: {\r",
+                  "        statusCode: {\r",
+                  "            type: \"integer\"\r",
+                  "        },\r",
+                  "        message: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        data: {\r",
+                  "            type: \"object\",\r",
+                  "required: [\"userId\", \"email\", \"role\", \"status\", \"createdDateTime\", \"firstName\",\r",
+                  " \"lastName\", \"city\", \"state\", \"country\", \"zoneId\", \"imageId\", \"jwtToken\"],\r",
+                  "            properties: {\r",
+                  "                userId: {\r",
+                  "                    type: \"integer\"\r",
+                  "                },\r",
+                  "                email: {\r",
+                  "                    type: \"string\",\r",
+                  "                    format: \"email\"\r",
+                  "                },\r",
+                  "                role: {\r",
+                  "                    type: \"string\"\r",
+                  "                },\r",
+                  "                status: {\r",
+                  "                    type: \"string\"\r",
+                  "                },\r",
+                  "                createdDateTime: {\r",
+                  "                    type: [\"string\", \"null\"]\r",
+                  "                },\r",
+                  "                firstName: {\r",
+                  "                    type: \"string\"\r",
+                  "                },\r",
+                  "                lastName: {\r",
+                  "                    type: \"string\"\r",
+                  "                },\r",
+                  "                city: {\r",
+                  "                    type: \"string\"\r",
+                  "                },\r",
+                  "                state: {\r",
+                  "                    type: \"string\"\r",
+                  "                },\r",
+                  "                country: {\r",
+                  "                    type: \"string\"\r",
+                  "                },\r",
+                  "                zoneId: {\r",
+                  "                    type: \"string\"\r",
+                  "                },\r",
+                  "                imageId: {\r",
+                  "                    type: [\"integer\", \"string\", \"null\"]\r",
+                  "                },\r",
+                  "                jwtToken: {\r",
+                  "                    type: \"string\"\r",
+                  "                }\r",
+                  "            }\r",
+                  "        }\r",
+                  "    }\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Response JSON schema validation\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(schema);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{randomEmail}}\",\r\n  \"password\": \"Kumar@3456\",\r\n  \"role\": \"{{Role}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}{{LoginEndPoint}}",
+              "host": [
+                "{{BaseUrl}}{{LoginEndPoint}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "gromming",
+      "item": [
+        {
+          "name": "Register as a shopper",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"city\": \"Banglore\",\r\n  \"country\": \"India\",\r\n  \"email\": \"Rohan420@gmail.com\",\r\n  \"firstName\": \"Rohan\",\r\n  \"gender\": \"MALE\",\r\n  \"lastName\": \"Kundu\",\r\n  \"password\": \"maleRohan@123\",\r\n  \"phone\": 9876543212,\r\n  \"state\": \"Karanatka\",\r\n  \"zoneId\": \"ALPHA\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://www.shoppersstack.com/shopping/shoppers",
+              "protocol": "https",
+              "host": [
+                "www",
+                "shoppersstack",
+                "com"
+              ],
+              "path": [
+                "shopping",
+                "shoppers"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BaseUrl",
+      "value": ""
+    },
+    {
+      "key": "CreateEndPoint",
+      "value": ""
+    },
+    {
+      "key": "randomEmail",
+      "value": ""
+    },
+    {
+      "key": "UserID",
+      "value": ""
+    },
+    {
+      "key": "Role",
+      "value": ""
+    },
+    {
+      "key": "LoginEndPoint",
+      "value": ""
+    },
+    {
+      "key": "jwtToken",
+      "secret": true,
+      "source": {
+        "provider": "postman",
+        "postman": {
+          "type": "cloud",
+          "secretId": "4432b229-1efd-4eb0-9beb-a7f45c382cc4",
+          "vaultId": "9fb319c3-4b15-487c-99c7-51cb534232d7"
+        }
+      }
+    },
+    {
+      "key": "ShopperDetailsEnd",
+      "value": ""
+    }
+  ]
+}
